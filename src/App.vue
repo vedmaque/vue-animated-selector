@@ -9,43 +9,47 @@
       <div @click="ver = 2" :class="{_active: ver === 2}">ver2</div>
     </div>
 
-    <transition-group
-      name="selector-transition"
-      tag="div"
-      class="transition-wrapper"
-      @before-leave="beforeLeave"
-    >
-      <template v-if="ver === 1">
-        <div
-          class="select-option"
-          v-for="option in options"
-          :key="option.id"
-          :class="{
-            _selected: option.value === value,
-            _collapsed: isClosed && option.value !== value
-          }"
-          @click="onOptionClick(option)"
+    <div class="flex-wrapper">
+      <div class="wrapper">
+        <transition-group
+          name="selector-transition"
+          tag="div"
+          class="transition-wrapper"
+          @before-leave="beforeLeave"
         >
-          {{ option.value }}
-        </div>
-      </template>
+          <template v-if="ver === 1">
+            <div
+              class="select-option"
+              v-for="option in options"
+              :key="option.id"
+              :class="{
+                _selected: option.value === value,
+                _collapsed: isClosed && option.value !== value
+              }"
+              @click="onOptionClick(option)"
+            >
+              {{ option.value }}
+            </div>
+          </template>
 
-      <template v-if="ver === 2">
-        <div
-          class="select-option"
-          v-for="option in options2"
-          :key="option.id"
-          :class="{
-            _selected: option.value === value
-          }"
-          @click="onOptionClick(option)"
-        >
-          {{ option.value }}
-        </div>
-      </template>
+          <template v-if="ver === 2">
+            <div
+              class="select-option"
+              v-for="option in options2"
+              :key="option.id"
+              :class="{
+                _selected: option.value === value
+              }"
+              @click="onOptionClick(option)"
+            >
+              {{ option.value }}
+            </div>
+          </template>
 
-      <button class="button-save" key="button">Save</button>
-    </transition-group>
+          <button class="button-save" key="button">Save</button>
+        </transition-group>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -118,7 +122,16 @@ export default {
   }
 }
 
+.flex-wrapper {
+  display: flex;
+  justify-content: center;
+}
+.wrapper {
+  flex-basis: 300px;
+}
+
 .select-option {
+  cursor: pointer;
   border: 1px solid black;
   margin-bottom: 8px;
   height: 40px;
@@ -143,6 +156,7 @@ export default {
   }
 }
 .button-save {
+  cursor: pointer;
   border: 1px solid #42b983;
   background-color: #fff;
   border-radius: 6px;
