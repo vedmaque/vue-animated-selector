@@ -4,49 +4,25 @@
 
     <h3>Selector</h3>
 
-    <div id="nav">
-      <div @click="ver = 1" :class="{_active: ver === 1}">ver1</div>
-      <div @click="ver = 2" :class="{_active: ver === 2}">ver2</div>
-    </div>
-
     <div class="flex-wrapper">
       <div class="wrapper">
         <transition-group
           name="selector-transition"
           tag="div"
           class="transition-wrapper"
-          @before-leave="beforeLeave"
         >
-          <template v-if="ver === 1">
-            <div
-              class="select-option"
-              v-for="option in options"
-              :key="option.id"
-              :class="{
-                _selected: option.value === value,
-                _collapsed: isClosed && option.value !== value
-              }"
-              @click="onOptionClick(option)"
-            >
-              {{ option.value }}
-            </div>
-          </template>
+          <Selector
+            class="transition-element"
+            key="selector"
+            v-model="selectedValue"
+            :options="options"
+            :is-opened.sync="isOpened"
+          ></Selector>
 
-          <template v-if="ver === 2">
-            <div
-              class="select-option"
-              v-for="option in options2"
-              :key="option.id"
-              :class="{
-                _selected: option.value === value
-              }"
-              @click="onOptionClick(option)"
-            >
-              {{ option.value }}
-            </div>
-          </template>
-
-          <button class="button-save" key="button">Save</button>
+          <button
+            class="transition-element button-save"
+            key="button"
+          >Save</button>
         </transition-group>
       </div>
     </div>
@@ -54,40 +30,24 @@
 </template>
 
 <script>
+import Selector from '@/components/Selector.vue'
+
+const OPTIONS = [{ id: 1, value: 1 }, { id: 2, value: 2 }, { id: 3, value: 3 }]
+
 export default {
   name: 'app',
 
+  components: {
+    Selector,
+  },
+
   data: () => ({
-    ver: 1,
-    value: 1,
+    selectedValue: OPTIONS[0],
     isOpened: false,
   }),
   computed: {
     options() {
-      return [{ id: 1, value: 1 }, { id: 2, value: 2 }, { id: 3, value: 3 }]
-    },
-    options2() {
-      const { value, options } = this
-      if (this.isClosed) {
-        return [options.find(v => v.value === value)]
-      }
-      return options
-    },
-    isClosed() {
-      return !this.isOpened
-    },
-  },
-  methods: {
-    onOptionClick(option) {
-      if (this.isOpened) {
-        this.value = option.value
-        this.isOpened = false
-      } else {
-        this.isOpened = true
-      }
-    },
-    beforeLeave(el) {
-      el.classList.remove('_selected')
+      return OPTIONS
     },
   },
 }
@@ -104,22 +64,6 @@ export default {
 }
 .vue-logo {
   height: 50px;
-}
-#nav {
-  padding-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  div {
-    cursor: pointer;
-    font-weight: bold;
-    color: #2c3e50;
-    &._active {
-      color: #42b983;
-    }
-  }
-  div + div {
-    margin-left: 16px;
-  }
 }
 
 .flex-wrapper {
@@ -140,7 +84,7 @@ export default {
   justify-content: center;
   box-sizing: border-box;
   background-color: #fff;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 
   &._selected {
     background: #42b983;
@@ -162,7 +106,6 @@ export default {
   border-radius: 6px;
   padding: 8px 16px;
   margin-top: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .transition-wrapper {
@@ -179,5 +122,9 @@ export default {
   width: 100%;
   top: 0;
   left: 0;
+}
+
+.transition-element {
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 </style>
